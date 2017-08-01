@@ -3,3 +3,9 @@
 
 sudo systemctl start nginx.service
 启动Nginx
+
+
+wxapp  修改配置
+utils
+addimages
+addvideos

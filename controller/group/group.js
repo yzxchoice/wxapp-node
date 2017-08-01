@@ -411,6 +411,8 @@ class Group extends BaseComponent {
 
 	async getAlbum(req, res, next){
         let groupid = req.query.groupid;
+        let pageindex = req.query.pageindex || 0;
+        let pagenum = req.query.pagenum || 10;
         try{
             if(!groupid){
                 throw new Error('必须有群组ID');
@@ -438,9 +440,11 @@ class Group extends BaseComponent {
             return -item.createtime;
         })
 
+        const temp2 = temp1.slice(pageindex*pagenum, (parseInt(pageindex)+1)*pagenum);
+
 
         try{
-            res.send(temp1)
+            res.send(temp2)
         }catch(err){
             res.send({
                 status: 0,
@@ -452,12 +456,13 @@ class Group extends BaseComponent {
 
     async addImage(req, res, next){
         const form = new formidable.IncomingForm();
-        //form.uploadDir = "E:\\michael\\mygroup\\public\\pic";
+        // form.uploadDir = "E:\\michael\\wxapp-node\\wxapp-node\\public\\pic";
         form.uploadDir = "/wxapp/public/pic";
         form.keepExtensions = true;
         form.parse(req, async (err, fields, files) => {
-            let l = files.file.path.lastIndexOf('/')
-            // let l = files.file.path.lastIndexOf('\\')
+            // let l = files.file.path.lastIndexOf('/')
+            console.log(`files:${files}`)
+            let l = files.file.path.lastIndexOf('\\')
             let filename = files.file.path.substring(l+1)
             try {
                 if (!files) {
@@ -485,40 +490,67 @@ class Group extends BaseComponent {
                 })
                 return
             }
-            const newImage = {
-                userid: user.id,
-                img_path: filename,
-                name: fields.name || '',
-                groupid: fields.groupid,
-                description: fields.description || '',
-                id: image_id,
-                createtime: new Date().getTime(),
-                addtime: dtime().format('YYYY-MM-DD HH:mm')
-            }
-            console.log(newImage);
-            try {
-                //保存数据
-                const image = new ImageModel(newImage);
-                await image.save();
-                res.send({
-                    status: 1,
-                    sussess: 'add image success',
-                    imageDetail: newImage
-                })
+            ///已经存在第一张图片
+            const imageExist = await ImageModel.findOne({imgtoken: fields.imgtoken})
+            if(imageExist){
+                try{
+                    imageExist.imgpatharray.push(filename)
+                    await imageExist.save();
+                    res.send({
+                        status: 1,
+                        sussess: 'add image success',
+                        imageDetail: imageExist
+                    })
+                } catch (err){
+                    console.log('image write to db failed');
+                    res.send({
+                        status: 0,
+                        type: 'ERROR_SERVER',
+                        message: 'add image failed',
+                    })
+                }
 
-            } catch (err) {
-                console.log('image write to db failed');
-                res.send({
-                    status: 0,
-                    type: 'ERROR_SERVER',
-                    message: 'add image failed',
-                })
+            }else {
+                const newImage = {
+                    userid: user.id,
+                    img_path: filename,
+                    name: fields.name || '',
+                    groupid: fields.groupid,
+                    description: fields.description || '',
+                    id: image_id,
+                    createtime: new Date().getTime(),
+                    addtime: dtime().format('YYYY-MM-DD HH:mm'),
+                    imgpatharray: [filename],
+                    imgtoken: fields.imgtoken
+                }
+                console.log(newImage);
+                try {
+                    //保存数据
+                    const image = new ImageModel(newImage);
+                    await image.save();
+                    res.send({
+                        status: 1,
+                        sussess: 'add image success',
+                        imageDetail: newImage
+                    })
+
+                } catch (err) {
+                    console.log('image write to db failed');
+                    res.send({
+                        status: 0,
+                        type: 'ERROR_SERVER',
+                        message: 'add image failed',
+                    })
+                }
             }
+
         })
     }
 
     async getVideos(req, res, next){
         let groupid = req.query.groupid;
+        let pageindex = req.query.pageindex || 0;
+        let pagenum = req.query.pagenum || 10;
         try{
             if(!groupid){
                 throw new Error('必须有群组ID');
@@ -546,8 +578,10 @@ class Group extends BaseComponent {
             return -item.createtime;
         })
 
+        const temp2 = temp1.slice(pageindex*pagenum, (parseInt(pageindex)+1)*pagenum);
+
         try{
-            res.send(temp1)
+            res.send(temp2)
         }catch(err){
             res.send({
                 status: 0,
@@ -559,11 +593,12 @@ class Group extends BaseComponent {
 
     async addVideo(req, res, next){
         const form = new formidable.IncomingForm();
-        // form.uploadDir = "E:\\michael\\mygroup\\public\\videos";
+        // form.uploadDir = "E:\\michael\\wxapp-node\\wxapp-node\\public\\videos";
         form.uploadDir = "/wxapp/public/videos";
         form.keepExtensions = true;
         form.parse(req, async (err, fields, files) => {
-            let l = files.file.path.lastIndexOf('/')
+            // let l = files.file.path.lastIndexOf('/')
+            let l = files.file.path.lastIndexOf('\\')
             let filename = files.file.path.substring(l+1)
             try {
                 if (!files) {

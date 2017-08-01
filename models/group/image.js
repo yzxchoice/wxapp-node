@@ -12,7 +12,11 @@ const imageSchema = new mongoose.Schema({
     createtime: { type: Date, default: Date.now },
     addtime: String,
     user_image_path: { type: String, default: "" },
-    username: String
+    username: String,
+    imgtoken: String,
+    imgpatharray: [
+        { type: String, default: "" }
+    ]
 });
 
 imageSchema.index({ id: 1 });
