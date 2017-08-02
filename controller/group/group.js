@@ -460,9 +460,9 @@ class Group extends BaseComponent {
         form.uploadDir = "/wxapp/public/pic";
         form.keepExtensions = true;
         form.parse(req, async (err, fields, files) => {
-            // let l = files.file.path.lastIndexOf('/')
+            let l = files.file.path.lastIndexOf('/')
             console.log(`files:${files}`)
-            let l = files.file.path.lastIndexOf('\\')
+            // let l = files.file.path.lastIndexOf('\\')
             let filename = files.file.path.substring(l+1)
             try {
                 if (!files) {
@@ -597,8 +597,8 @@ class Group extends BaseComponent {
         form.uploadDir = "/wxapp/public/videos";
         form.keepExtensions = true;
         form.parse(req, async (err, fields, files) => {
-            // let l = files.file.path.lastIndexOf('/')
-            let l = files.file.path.lastIndexOf('\\')
+            let l = files.file.path.lastIndexOf('/')
+            // let l = files.file.path.lastIndexOf('\\')
             let filename = files.file.path.substring(l+1)
             try {
                 if (!files) {
