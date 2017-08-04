@@ -21,10 +21,7 @@ http {
 ###########################################
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
-	
-	
-	client_max_body_size 50m;
-	proxy_max_temp_file_size 0;
+	client_max_body_size 20m;
 
     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
@@ -49,7 +46,7 @@ http {
     {
 		listen 443;
         server_name online.yueyinyuemei.com; #填写绑定证书的域名
-        ssl on;`
+        ssl on;
         ssl_certificate /usr/local/nginx/conf/1_online.yueyinyuemei.com_bundle.crt;
         ssl_certificate_key /usr/local/nginx/conf/2_online.yueyinyuemei.com.key;
         ssl_session_timeout 5m;
@@ -64,11 +61,11 @@ http {
             root   html;
             index  index.html index.htm;
         }
-
+		
 		location /project/ {
 			proxy_pass	http://projectup/;
 		}
-
+		
 		location /ui/ {
 			root /hzy/software/static;
         }
