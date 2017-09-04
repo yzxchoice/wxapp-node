@@ -157,6 +157,33 @@ class Group extends BaseComponent {
 
 	}
 
+    async deleteActive(req, res, next){
+        const active_id = req.query.active_id;
+        if (!active_id || !Number(active_id)) {
+            console.log('active_id');
+            res.send({
+                status: 0,
+                type: 'ERROR_PARAMS',
+                message: 'active_id',
+            })
+            return
+        }
+        try{
+            await ActiveModel.remove({id: active_id});
+            res.send({
+                status: 1,
+                success: '删除活动成功',
+            })
+        }catch(err){
+            console.log('删除活动失败', err);
+            res.send({
+                status: 0,
+                type: 'DELETE_ACTIVE_FAILED',
+                message: '删除活动失败',
+            })
+        }
+    }
+
 	async addActive(req, res, next){
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
@@ -454,6 +481,34 @@ class Group extends BaseComponent {
         }
     }
 
+
+    async deleteImage(req, res, next){
+        const image_id = req.query.image_id;
+        if (!image_id || !Number(image_id)) {
+            console.log('image_id');
+            res.send({
+                status: 0,
+                type: 'ERROR_PARAMS',
+                message: 'image_id',
+            })
+            return
+        }
+        try{
+            await ImageModel.remove({id: image_id});
+            res.send({
+                status: 1,
+                success: '删除图片成功',
+            })
+        }catch(err){
+            console.log('删除图片失败', err);
+            res.send({
+                status: 0,
+                type: 'DELETE_IMAGE_FAILED',
+                message: '删除图片失败',
+            })
+        }
+    }
+
     async addImage(req, res, next){
         const form = new formidable.IncomingForm();
         // form.uploadDir = "E:\\michael\\wxapp-node\\wxapp-node\\public\\pic";
@@ -587,6 +642,33 @@ class Group extends BaseComponent {
                 status: 0,
                 type: 'ERROR_GET_VIDEO_LIST',
                 message: 'get videos error'
+            })
+        }
+    }
+
+    async deleteVideo(req, res, next){
+        const video_id = req.query.video_id;
+        if (!video_id || !Number(video_id)) {
+            console.log('video_id');
+            res.send({
+                status: 0,
+                type: 'ERROR_PARAMS',
+                message: 'video_id',
+            })
+            return
+        }
+        try{
+            await VideoModel.remove({id: video_id});
+            res.send({
+                status: 1,
+                success: '删除视频成功',
+            })
+        }catch(err){
+            console.log('删除视频失败', err);
+            res.send({
+                status: 0,
+                type: 'DELETE_VIDEO_FAILED',
+                message: '删除视频失败',
             })
         }
     }

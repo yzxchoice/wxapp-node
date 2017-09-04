@@ -46,6 +46,25 @@ class User extends BaseComponent {
 		})
 	}
 
+	async getUser(req, res, next){
+        const form = new formidable.IncomingForm();
+        form.parse(req, async (err, fields, files) => {
+            try {
+                if (!fields.jscode) {
+                    throw new Error('获取用户信息失败');
+                }
+            } catch (err) {
+                console.log('前台参数出错', err.message);
+                res.send({
+                    status: 0,
+                    type: 'ERROR_PARAMS',
+                    message: err.message
+                })
+                return
+            }
+        })
+    }
+
     //添加用户
     async addUser(req, res, next){
         const form = new formidable.IncomingForm();

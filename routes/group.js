@@ -21,5 +21,8 @@ router.get('/getvideos', Group.getVideos);
 
 router.post('/addvideo', Group.addVideo);
 router.get('/videos', Group.getVideos);
+router.get('/deletevideo', Group.deleteVideo);
+router.get('/deleteimage', Group.deleteImage);
+router.get('/deleteactive', Group.deleteActive);
 
 export default router
